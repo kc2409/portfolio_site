@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A starter post — Koushiki Chakrabarti</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="wrap">
+    <a class="brand" href="../index.html">Koushiki Chakrabarti</a>
+    <div class="links">
+      <a href="../index.html">Home</a>
+      <a href="../blog.html" class="active">Writing</a>
+    </div>
+  </div>
+</nav>
+
+<main class="wrap">
+  <article class="post">
+    <span class="post-date">Placeholder &middot; Sep 2026</span>
+    <h1>A starter post — replace this with your first entry</h1>
+    <div class="post-tags"><span class="tag">NLP</span><span class="tag">Retrieval</span><span class="tag">Notes</span></div>
+
+    <p>This is a placeholder post. Replace this paragraph with your actual introduction — what problem you ran into, what you were trying to understand, or what prompted the write-up.</p>
+
+    <h2>A subheading</h2>
+    <p>Body text goes here. Keep paragraphs short and specific — this template already handles code blocks, inline <code>code</code>, and headings, so you can focus on the writing.</p>
+
+    <pre><code>def contrastive_loss(anchor, positive, negatives, temperature=0.07):
+    sim_pos = cosine_similarity(anchor, positive) / temperature
+    sim_neg = cosine_similarity(anchor, negatives) / temperature
+    return -log_softmax([sim_pos, *sim_neg])[0]</code></pre>
+
+    <p>You can add as many headings, paragraphs, and code blocks as the post needs. When you're ready to publish, add a matching entry at the top of <code>blog.html</code>'s post list linking to this file.</p>
+
+    <a class="back-link" href="../blog.html">&larr; Back to all posts</a>
+  </article>
+</main>
+
+<footer>Koushiki Chakrabarti &middot; Mumbai, India</footer>
+
+</body>
+</html>
