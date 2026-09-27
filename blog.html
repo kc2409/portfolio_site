@@ -4,16 +4,21 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Writing — Koushiki Chakrabarti</title>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
 <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
 <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <nav class="topnav">
   <div class="wrap">
     <a class="brand" href="index.html">Koushiki Chakrabarti</a>
+
     <div class="links">
       <a href="index.html">Home</a>
       <a href="blog.html" class="active">Writing</a>
@@ -21,29 +26,159 @@
   </div>
 </nav>
 
+
 <header class="hero" style="padding:70px 0 50px;">
   <div class="wrap">
-    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);">Writing</h1>
-    <p class="role">Notes on representation learning, retrieval, and the odd corners of NLP and reliable AI I run into along the way.</p>
+
+    <h1 style="font-size:clamp(1.9rem,4vw,2.6rem);">
+      Writing
+    </h1>
+
+    <p class="role">
+      Technical notes, experiments, and things I learn while working with
+      machine learning systems, recommendation models, NLP, and reliable AI.
+    </p>
+
   </div>
 </header>
 
+
 <main class="wrap">
+
   <section style="border-bottom:none; padding-top:44px;">
+
     <div class="post-list">
 
+
+      <!-- POST 1 -->
+
       <div class="post-item">
-        <span class="post-date">Placeholder &middot; Sep 2026</span>
-        <h2 class="post-title"><a href="posts/sample-post.html">A starter post — replace this with your first entry</a></h2>
-        <p class="post-excerpt">This is a placeholder post showing the layout: a short excerpt here, then the full write-up with headings and code on its own page. Duplicate posts/sample-post.html to add a real one.</p>
-        <div class="post-tags"><span class="tag">NLP</span><span class="tag">Retrieval</span><span class="tag">Notes</span></div>
+
+        <span class="post-date">
+          Learning Note &middot; Sep 2026
+        </span>
+
+        <h2 class="post-title">
+          <a href="posts/recommendation-ranking.html">
+            From Model Scores to Recommendations: What I Learned About Ranking
+          </a>
+        </h2>
+
+        <p class="post-excerpt">
+          A practical look at what happens between a recommendation model
+          producing scores and a user actually seeing a ranked list. I explore
+          candidate items, ground-truth labels, ranking, and what AUC, MRR,
+          and nDCG actually tell us about a recommender system.
+        </p>
+
+        <div class="post-tags">
+          <span class="tag">Recommender Systems</span>
+          <span class="tag">Ranking</span>
+          <span class="tag">Evaluation</span>
+          <span class="tag">ML Systems</span>
+        </div>
+
       </div>
 
+
+      <!-- POST 2 -->
+
+      <div class="post-item">
+
+        <span class="post-date">
+          Notes &middot; Coming soon
+        </span>
+
+        <h2 class="post-title">
+          <a href="#">
+            What Does a Model Score Actually Mean?
+          </a>
+        </h2>
+
+        <p class="post-excerpt">
+          A short note on logits, probabilities, ranking scores, and why
+          interpreting a model's output is often more subtle than looking
+          at a number between zero and one.
+        </p>
+
+        <div class="post-tags">
+          <span class="tag">Machine Learning</span>
+          <span class="tag">Interpretability</span>
+          <span class="tag">Notes</span>
+        </div>
+
+      </div>
+
+
+      <!-- POST 3 -->
+
+      <div class="post-item">
+
+        <span class="post-date">
+          Research Note &middot; Coming soon
+        </span>
+
+        <h2 class="post-title">
+          <a href="#">
+            When Longer Tasks Become Harder for AI Agents
+          </a>
+        </h2>
+
+        <p class="post-excerpt">
+          Thinking about reliability beyond single answers: why completing
+          a long sequence of individually simple actions can be fundamentally
+          different from solving one difficult problem.
+        </p>
+
+        <div class="post-tags">
+          <span class="tag">Agents</span>
+          <span class="tag">Reliability</span>
+          <span class="tag">AI Safety</span>
+        </div>
+
+      </div>
+
+
+      <!-- POST 4 -->
+
+      <div class="post-item">
+
+        <span class="post-date">
+          Learning Note &middot; Coming soon
+        </span>
+
+        <h2 class="post-title">
+          <a href="#">
+            A Small Experiment with Retrieval and LLM Inference
+          </a>
+        </h2>
+
+        <p class="post-excerpt">
+          Notes from experimenting with retrieval-augmented generation,
+          candidate pruning, and the relationship between retrieved context,
+          KV-cache usage, and inference efficiency.
+        </p>
+
+        <div class="post-tags">
+          <span class="tag">LLMs</span>
+          <span class="tag">RAG</span>
+          <span class="tag">Inference</span>
+        </div>
+
+      </div>
+
+
     </div>
+
   </section>
+
 </main>
 
-<footer>Koushiki Chakrabarti &middot; Mumbai, India</footer>
+
+<footer>
+  Koushiki Chakrabarti &middot; Mumbai, India
+</footer>
+
 
 </body>
 </html>

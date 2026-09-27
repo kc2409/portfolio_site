@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+<title>
+From Model Scores to Recommendations — Koushiki Chakrabarti
+</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet">
+
+<link rel="stylesheet" href="../style.css">
+
+</head>
+
+
+<body>
+
+
+<nav class="topnav">
+
+  <div class="wrap">
+
+    <a class="brand" href="../index.html">
+      Koushiki Chakrabarti
+    </a>
+
+    <div class="links">
+
+      <a href="../index.html">
+        Home
+      </a>
+
+      <a href="../blog.html" class="active">
+        Writing
+      </a>
+
+    </div>
+
+  </div>
+
+</nav>
+
+
+<main class="wrap">
+
+  <article class="post">
+
+    <header class="post-header">
+
+      <span class="post-date">
+        Learning Note &middot; September 2026
+      </span>
+
+      <h1>
+        From Model Scores to Recommendations:
+        What I Learned About Ranking
+      </h1>
+
+      <p class="post-lede">
+        A practical look at what happens between a recommendation model
+        producing scores and a user actually seeing a ranked list.
+      </p>
+
+      <div class="post-tags">
+
+        <span class="tag">
+          Recommender Systems
+        </span>
+
+        <span class="tag">
+          Ranking
+        </span>
+
+        <span class="tag">
+          Evaluation
+        </span>
+
+        <span class="tag">
+          ML Systems
+        </span>
+
+      </div>
+
+    </header>
+
+
+    <div class="post-content">
+
+
+      <p>
+        While working with a neural news recommendation model, I initially
+        thought the evaluation pipeline would be fairly straightforward:
+        run the trained model, obtain scores for candidate news articles,
+        sort them, and calculate a few metrics.
+      </p>
+
+
+      <p>
+        The interesting part turned out to be everything around the model.
+        What exactly does a score represent? Which article is the ground-truth
+        positive? How do we know that the prediction and label refer to the
+        same candidate? And what does it actually mean when one model has a
+        higher AUC but another has a better MRR?
+      </p>
+
+
+      <h2>
+        A recommendation model produces scores, not recommendations
+      </h2>
+
+
+      <p>
+        Suppose a user has a set of candidate news articles:
+      </p>
+
+
+      <pre><code>News        Score
+
+Article A   0.91
+Article B   0.83
+Article C   0.67
+Article D   0.41</code></pre>
+
+
+      <p>
+        The model's output is not necessarily saying that Article A has a
+        91% probability of being clicked. Depending on the architecture and
+        training objective, the number may simply be a relevance score.
+      </p>
+
+
+      <p>
+        What usually matters first is the ordering:
+      </p>
+
+
+      <pre><code>A &gt; B &gt; C &gt; D</code></pre>
+
+
+      <p>
+        In that sense, a recommendation model can be viewed as a ranking
+        function:
+      </p>
+
+
+      <pre><code>f(user, news) → score</code></pre>
+
+
+      <p>
+        The recommendation system then converts those scores into an ordered
+        list.
+      </p>
+
+
+      <h2>
+        Prediction and ground truth are different things
+      </h2>
+
+
+      <p>
+        One distinction that became important to me was separating the
+        model's prediction from the actual interaction recorded in the
+        dataset.
+      </p>
+
+
+      <pre><code>News        Score    Rank    Clicked
+
+Article A   0.91       1        0
+Article B   0.83       2        1
+Article C   0.67       3        0
+Article D   0.41       4        0</code></pre>
+
+
+      <p>
+        Here the model ranked Article A first, but the observed click was on
+        Article B.
+      </p>
+
+
+      <p>
+        This is exactly where evaluation begins. The model provides the
+        scores, while the dataset provides the labels. We need to align the
+        two before calculating anything meaningful.
+      </p>
+
+
+      <h2>
+        Candidate alignment matters more than it looks
+      </h2>
+
+
+      <p>
+        Imagine that the model produces scores for:
+      </p>
+
+
+      <pre><code>[N1, N2, N3, N4]</code></pre>
+
+
+      <p>
+        and the corresponding labels are:
+      </p>
+
+
+      <pre><code>[0, 1, 0, 0]</code></pre>
+
+
+      <p>
+        The positive interaction belongs to N2.
+      </p>
+
+
+      <p>
+        If the labels accidentally become:
+      </p>
+
+
+      <pre><code>[1, 0, 0, 0]</code></pre>
+
+
+      <p>
+        the evaluation pipeline now thinks N1 was the positive example.
+        The model did not change. The metric did not change. Only the
+        alignment between predictions and labels changed.
+      </p>
+
+
+      <p>
+        This made me pay much more attention to seemingly small details such
+        as candidate ordering, dataset row identifiers, news IDs, and user
+        context.
+      </p>
+
+
+      <h2>
+        What does AUC actually tell us?
+      </h2>
+
+
+      <p>
+        AUC is useful for measuring how well a model separates positive and
+        negative candidates.
+      </p>
+
+
+      <p>
+        Conceptually, it asks:
+      </p>
+
+
+      <blockquote>
+        If I randomly select one clicked article and one non-clicked article,
+        how often does the model give the clicked article a higher score?
+      </blockquote>
+
+
+      <p>
+        In simplified form:
+      </p>
+
+
+      <pre><code>AUC = P(score_positive &gt; score_negative)</code></pre>
+
+
+      <p>
+        This means AUC captures a different property from simply asking
+        whether the first recommendation was correct.
+      </p>
+
+
+      <h2>
+        MRR asks a different question
+      </h2>
+
+
+      <p>
+        Mean Reciprocal Rank focuses on the position of the first relevant
+        item.
+      </p>
+
+
+      <pre><code>rank 1 → 1.00
+rank 2 → 0.50
+rank 3 → 0.33
+rank 5 → 0.20</code></pre>
+
+
+      <p>
+        So MRR is particularly intuitive when we care about how quickly a
+        recommendation system surfaces something relevant.
+      </p>
+
+
+      <h2>
+        nDCG looks at the top of the whole ranking
+      </h2>
+
+
+      <p>
+        nDCG takes the position of relevant items into account. An item near
+        the top contributes more than the same item appearing much further
+        down the list.
+      </p>
+
+
+      <pre><code>DCG@k =
+Σ (2^rel_i - 1) / log2(i + 1)
+
+nDCG@k =
+DCG@k / IDCG@k</code></pre>
+
+
+      <p>
+        This makes nDCG useful when we care about the quality of the complete
+        top-k recommendation list rather than only the first relevant item.
+      </p>
+
+
+      <h2>
+        Why I don't think one metric is enough
+      </h2>
+
+
+      <p>
+        Imagine two models.
+      </p>
+
+
+      <p>
+        The first is very good at separating positive and negative candidates,
+        but often puts the relevant article somewhere around rank 15.
+        The second is slightly worse at overall separation but frequently
+        places the relevant article in the top three.
+      </p>
+
+
+      <p>
+        Looking at only one metric can hide this difference.
+      </p>
+
+
+      <p>
+        AUC, MRR, and nDCG describe different properties of the ranking.
+        Together they give a more useful picture of model behaviour.
+      </p>
+
+
+      <h2>
+        Making prediction outputs easier to debug
+      </h2>
+
+
+      <p>
+        One practical thing I found useful was keeping the prediction output
+        explicit.
+      </p>
+
+
+      <pre><code>dataset_row,user,news_id,score,rank,clicked
+0,1,N5940,0.9131,1,0
+0,1,N34130,0.8427,2,1
+0,1,N15210,0.6312,3,0</code></pre>
+
+
+      <p>
+        A table like this connects several stages of the experiment:
+      </p>
+
+
+      <pre><code>Dataset
+   ↓
+Candidate generation
+   ↓
+Model
+   ↓
+Scores
+   ↓
+Ranking
+   ↓
+Ground-truth alignment
+   ↓
+Metrics</code></pre>
+
+
+      <p>
+        It also makes debugging much easier. Instead of looking at an
+        aggregate metric and wondering why it changed, I can inspect an
+        individual recommendation list and ask what actually happened.
+      </p>
+
+
+      <h2>
+        The small lesson I took away
+      </h2>
+
+
+      <p>
+        Before working through this pipeline, I mostly thought about
+        evaluation as the final step after training a model.
+      </p>
+
+
+      <p>
+        Now I think about it as part of the entire data flow.
+      </p>
+
+
+      <p>
+        A good recommendation experiment is not only about building a model
+        that produces useful scores. It is also about maintaining the
+        connection between the user, candidate item, prediction, ranking,
+        and observed interaction all the way through evaluation.
+      </p>
+
+
+      <p>
+        In recommendation systems, the ranking is only part of the story.
+        The other part is being able to explain exactly what was ranked,
+        why it received that position, and how we know whether that ranking
+        was useful.
+      </p>
+
+
+      <p class="post-end">
+        <em>
+          This is one of those things that looks simple when written as
+          “predict → rank → evaluate”, but becomes much more interesting
+          once you start following the data through every step.
+        </em>
+      </p>
+
+
+    </div>
+
+  </article>
+
+</main>
+
+
+<footer>
+  Koushiki Chakrabarti &middot; Mumbai, India
+</footer>
+
+
+</body>
+</html>
